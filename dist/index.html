@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0a242a">
+  <meta name="description" content="一只奶蛙，一把芦苇剑，一场穿越月光沼泽的冒险。原创像素风横版 Roguelike 动作游戏。">
+  <title>奶蛙：月沼远征 · MILKFROG</title>
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="奶蛙：月沼远征首页"><svg class="brand-frog" viewBox="0 0 32 32" aria-hidden="true"><path fill="#eed77a" d="M8 5h6v3h4V5h6v5h3v14h-3v3H8v-3H5V10h3z"/><path fill="#103b36" d="M10 8h3v4h-3zm10 0h3v4h-3zM12 19h8v2h-8z"/><path fill="#fff0c7" d="M9 22h14v3H9z"/></svg><span>MILKFROG<small>奶蛙冒险社</small></span></a>
+      <div class="top-meta"><span class="edition">一场小小的月夜冒险</span><span class="tag">ROGUELIKE</span></div>
+      <nav class="toolbar" aria-label="游戏设置">
+        <button id="help-btn" class="icon-button" title="操作说明" aria-label="操作说明" data-icon="help"></button>
+        <button id="sound-btn" class="icon-button" title="声音" aria-label="关闭声音" data-icon="sound" aria-pressed="true"></button>
+        <button id="settings-btn" class="icon-button" title="设置" aria-label="游戏设置" data-icon="settings"></button>
+        <button id="fullscreen-btn" class="icon-button" title="全屏" aria-label="切换全屏" data-icon="expand"></button>
+      </nav>
+    </header>
+
+    <main id="game-frame" class="game-frame" aria-label="奶蛙游戏">
+      <canvas id="game" width="640" height="360" tabindex="0" aria-label="2D 横版奶蛙动作游戏。按开始远征进入游戏。"></canvas>
+      <div class="vignette" aria-hidden="true"></div>
+      <div id="hud" class="hud hidden">
+        <div class="player-hud">
+          <div class="portrait"><svg viewBox="0 0 32 32" aria-hidden="true"><path fill="#eed77a" d="M8 5h6v3h4V5h6v5h3v14h-3v3H8v-3H5V10h3z"/><path fill="#103b36" d="M10 8h3v4h-3zm10 0h3v4h-3zM12 19h8v2h-8z"/><path fill="#fff0c7" d="M9 22h14v3H9z"/></svg></div>
+          <div class="vitals"><div class="vital-heading"><span>奶蛙</span><span id="hp-label">100 / 100</span></div><div class="meter health"><i id="hp-fill"></i></div><div class="meter energy"><i id="energy-fill"></i></div><div class="energy-label" id="energy-label">奶泡蓄能</div></div>
+        </div>
+        <div class="location-hud"><span id="biome-label">萤火森林</span><small id="room-label">01 / 07</small></div>
+        <div class="score-hud"><span class="mini-icon" data-icon="pearl"></span><span id="score-label">0</span><button id="pause-btn" class="icon-button" aria-label="暂停游戏" data-icon="pause"></button></div>
+      </div>
+      <div id="relic-bar" class="relic-bar hidden" aria-label="本局强化"></div>
+      <div id="boss-hud" class="boss-hud hidden"><div><span>潮汐蟾王</span><small id="boss-phase">月沼守望者</small></div><div class="meter boss"><i id="boss-fill"></i></div></div>
+      <div id="objective" class="objective hidden"><span class="objective-dot"></span><span id="objective-text">击败房间中的所有敌人</span></div>
+      <div id="exit-prompt" class="exit-prompt hidden"><kbd>E</kbd> 穿过月门</div>
+      <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+      <section id="menu" class="screen title-screen">
+        <div class="title-content">
+          <div class="eyebrow"><span></span> MILKFROG ADVENTURES <span></span></div>
+          <div class="chapter">一只奶蛙的勇敢夜行</div>
+          <h1>月沼<span>远征<span class="title-star">✦</span></span></h1>
+          <p class="title-description">带上芦苇剑，跃入萤火与月光。<br>每一次出发，都有新的奇遇。</p>
+          <button id="start-btn" class="primary-button"><span>开始远征</span><span data-icon="arrow"></span></button>
+          <button id="menu-help" class="text-button">第一次冒险？查看操作 <span>↗</span></button>
+          <div class="title-stats"><span>最佳纪录 <b id="best-score">—</b></span><i></i><span>通关 <b id="wins-count">0</b> 次</span></div>
+        </div>
+        <div class="scene-label"><span class="scene-line"></span><span>月光照亮的地方<br><small>总有一条回家的路。</small></span></div>
+        <div class="title-bottom"><span>原创像素冒险 · 六段旅途 · 随机奇遇</span><span>VOL. 01 / MOONMARSH</span></div>
+      </section>
+
+      <section id="pause-screen" class="screen modal-screen hidden" aria-labelledby="pause-title">
+        <div class="panel compact"><div class="panel-eyebrow">TAKE A LITTLE BREATH</div><h2 id="pause-title">在月光下歇一会儿</h2><p>远征会在你回来的地方继续。</p><button id="resume-btn" class="primary-button">继续冒险 <span data-icon="play"></span></button><button id="pause-help" class="secondary-button">操作说明</button><button id="pause-settings" class="secondary-button">声音与画面设置</button><button id="quit-btn" class="text-button">结束本局，返回营地</button></div>
+      </section>
+
+      <section id="upgrade-screen" class="screen modal-screen hidden" aria-labelledby="upgrade-title">
+        <div class="upgrade-content"><div class="panel-eyebrow">A GIFT FROM THE MARSH</div><h2 id="upgrade-title">月沼赠礼</h2><p>选择一份祝福，带着它继续前行。<span class="healing-note">选择后回复 18 生命</span></p><div id="upgrade-cards" class="upgrade-cards"></div><div class="choice-hint">点击卡片或按 <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> 选择 · 同类最多叠加 3 次</div></div>
+      </section>
+
+      <section id="end-screen" class="screen modal-screen hidden" aria-labelledby="end-title">
+        <div class="panel end-panel"><div class="end-emblem" id="end-emblem" data-icon="moon"></div><div class="panel-eyebrow" id="end-eyebrow">THE JOURNEY CONTINUES</div><h2 id="end-title">月光会记得你的勇敢</h2><p id="end-description">休息一下，下一次会走得更远。</p><div class="result-grid"><div><small>远征得分</small><strong id="end-score">0</strong></div><div><small>冒险时长</small><strong id="end-time">00:00</strong></div><div><small>到达房间</small><strong id="end-room">1 / 7</strong></div></div><div id="end-relics" class="end-relics"></div><button id="retry-btn" class="primary-button">再出发一次 <span data-icon="arrow"></span></button><button id="home-btn" class="text-button">返回营地</button></div>
+      </section>
+
+      <section id="help-screen" class="screen modal-screen hidden" aria-labelledby="help-title">
+        <div class="panel help-panel"><div class="panel-eyebrow">THE LITTLE ADVENTURER'S GUIDE</div><h2 id="help-title">冒险，从第一步开始</h2><div class="controls-grid"><div><span><kbd>A</kbd> <kbd>D</kbd></span><b>左右移动</b></div><div><span><kbd>SPACE</kbd></span><b>跳跃 / 二段跳</b></div><div><span><kbd>J</kbd></span><b>三连击 · 可按住</b></div><div><span><kbd>K</kbd></span><b>无敌冲刺</b></div><div><span><kbd>L</kbd></span><b>满能量奶泡爆发</b></div><div><span><kbd>E</kbd></span><b>穿过月门</b></div></div><div class="help-notes"><p><span data-icon="leaf"></span>清场后选择随机强化，叠加出自己的战斗风格。</p><p><span data-icon="spark"></span>敌人发光时即将攻击，跳跃或冲刺躲开。</p><p><span data-icon="heart"></span>选择强化回复生命。失败后重开，纪录会保留。</p></div><button id="close-help" class="secondary-button">知道啦 <span>Esc</span></button></div>
+      </section>
+
+      <section id="settings-screen" class="screen modal-screen hidden" aria-labelledby="settings-title"><div class="panel compact"><div class="panel-eyebrow">MAKE YOURSELF AT HOME</div><h2 id="settings-title">冒险偏好</h2><label class="setting-row"><span>游戏声音<small>音乐与动作音效</small></span><input id="sound-setting" type="checkbox" checked><span class="switch"></span></label><label class="setting-row"><span>屏幕震动<small>攻击与受击的镜头反馈</small></span><input id="shake-setting" type="checkbox" checked><span class="switch"></span></label><p class="settings-note">设置会保存在当前浏览器。</p><button id="close-settings" class="secondary-button">返回冒险 <span>Esc</span></button></div></section>
+
+      <div id="touch-controls" class="touch-controls hidden" aria-label="触控操作"><div class="touch-movement"><button data-action="left" aria-label="向左" data-icon="left"></button><button data-action="right" aria-label="向右" data-icon="right"></button></div><button class="touch-interact" data-action="interact" aria-label="穿过月门">E</button><div class="touch-actions"><button data-action="skill" class="touch-small" aria-label="奶泡爆发" data-icon="bubble"></button><button data-action="dash" class="touch-small" aria-label="冲刺" data-icon="wind"></button><button data-action="jump" aria-label="跳跃" data-icon="up"></button><button data-action="attack" class="touch-attack" aria-label="攻击" data-icon="blade"></button></div></div>
+      <div class="rotate-note"><span data-icon="rotate"></span><b>横过来，冒险更开阔</b><p>请横屏游玩，或使用电脑键盘。</p></div>
+      <div id="loading" class="loading"><span class="loading-frog"></span>正在点亮萤火…</div>
+    </main>
+    <footer class="footer"><div class="desktop-hint"><span><kbd>A</kbd><kbd>D</kbd> 移动</span><span><kbd>SPACE</kbd> 二段跳</span><span><kbd>J</kbd> 攻击</span><span><kbd>K</kbd> 冲刺</span><span><kbd>L</kbd> 奶泡</span></div><span class="footer-note"><i></i> 每一次出发，都值得期待 <span class="version">v1.0</span></span></footer>
+  </div>
+  <noscript>这场奶蛙冒险需要启用 JavaScript。</noscript>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
